@@ -60,8 +60,13 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch or(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+		 Map<String, Integer> union = new HashMap<String, Integer>(this.map); 
+		 for(String i : that.map.keySet()){
+			 int score = this.getRelevance(i)+that.getRelevance(i);
+			 
+	      union.put(i, new Integer(score));
+		 }
+		 return new WikiSearch(union);
 	}
 	
 	/**
@@ -71,9 +76,16 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch and(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+		Map<String, Integer> Intercect = new HashMap<String, Integer>();
+		for(String i : this.map.keySet()){
+			if(that.map.containsKey(i)){
+				
+				 Intercect.put(i, totalRelevance(this.getRelevance(i),that.getRelevance(i)));
+			}
+		}
+		return new WikiSearch(Intercect);
 	}
+	
 	
 	/**
 	 * Computes the intersection of two search results.
@@ -82,8 +94,14 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch minus(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+		Map<String, Integer> Minus = new HashMap<String, Integer>(this.map);
+		for(String i : that.map.keySet()){
+			if(this.map.keySet().contains(i)){
+				Minus.remove(i);
+				
+			}
+		}
+		return new WikiSearch(Minus);
 	}
 	
 	/**
@@ -104,8 +122,17 @@ public class WikiSearch {
 	 * @return List of entries with URL and relevance.
 	 */
 	public List<Entry<String, Integer>> sort() {
-        // FILL THIS IN!
-		return null;
+		 List<Entry<String, Integer>> entries = new LinkedList<Entry<String, Integer>>(map.entrySet()); 
+		//List<Entry<String, Integer>> sortEntries = new LinkedList<Entry<String, Integer>>();
+		 Comparator<Entry<String, Integer>> comparator = new Comparator<Entry<String, Integer>>(){
+			    @Override 
+			 	public int compare(Entry<String, Integer> A, Entry<String, Integer> B) {
+				 return A.getValue().compareTo(B.getValue());
+			 }
+		 };
+		 Collections.sort(entries, comparator);
+		 return entries;
+		 
 	}
 
 	/**
